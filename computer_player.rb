@@ -1,14 +1,34 @@
 require_relative "player"
 
 class ComputerPlayer < Player
-  attr_accessor :values
   def initialize(name, color)
     super
-    set_values
   end
 
-  def set_values
-    
+  def best_move(display, moves)
+    smart_move = []
+    values = {"Q " => 10, "R " => 5, "Kn" => 3, "B " => 3,
+      "P " => 1, "Ki" => 0}
+    max_value = 0
+
+    moves.each do |move|
+      unless (display.board[move[1]] == nil ||
+      display.board[move[1]].color == @color)
+        cur_piece = display.board[move[1]].type
+        if (values[cur_piece] > max_value)
+          if smart_move.empty?
+            smart_move << move[0] << move[1]
+          else
+            smart_move[0], smart_move[1] = move[0], move[1]
+          end
+          max_value = values[cur_piece]
+        end
+      end
+    end
+    if (smart_move.empty?)
+      return moves.shuffle.first
+    end
+    smart_move
   end
 
   def get_move(display)
@@ -26,21 +46,6 @@ class ComputerPlayer < Player
         end
       end
     end
-    smart_move = []
-
-    all_moves.each do |move|
-      unless (display.board[move[1]] == nil ||
-        display.board[move[1]].color == @color)
-
-        smart_move = move
-        break
-      end
-    end
-
-    smart_move = all_moves.shuffle.first if smart_move.empty?
-
-    display.render
-    p "computer moved from #{smart_move[0]} to #{smart_move[1]}"
-    smart_move
+    best_move(display, all_moves)
   end
 end
