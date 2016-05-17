@@ -196,7 +196,32 @@ class Board
   end
 
   def over?
-    checkmate?(:black) || checkmate?(:white)
+    if (checkmate?(:black) || checkmate?(:white) ||
+      stalemate?(:black) || stalemate?(:white))
+      return true
+    end
+    return false
+  end
+
+  def display_winner(color)
+    if (checkmate?(color))
+      puts  "Checkmate! #{other_color(color)} wins!"
+    elsif (stalemate?(:black) || stalemate?(:white))
+      puts "Stalemate; nobody wins :/"
+    end
+  end
+
+  def stalemate?(color)
+    @grid.each do |row|
+      row.each do |square|
+        if square == nil || square.color != color
+          next
+        else
+          return false unless square.valid_moves.empty?
+        end
+      end
+    end
+    return true
   end
 end
 

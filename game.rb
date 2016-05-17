@@ -19,9 +19,8 @@ class Game
     until @board.over?
       play_turn
     end
-    next_player
     @display.render
-    puts "Checkmate! #{@cur_player.name} wins! "
+    @board.display_winner(@cur_player.color)
   end
 
   def play_turn
@@ -49,14 +48,18 @@ class Game
       @cur_player = @player1
     end
   end
-
-
 end
 
 if __FILE__ == $PROGRAM_NAME
   board = Board.new
   player1 = HumanPlayer.new("Richard", :white)
-  player2 = ComputerPlayer.new("Jordan", :black)
+  player2 = HumanPlayer.new("Jordan", :black)
   game = Game.new(board, player1, player2)
   game.play
 end
+
+#TO DO LIST
+#add logic for castling and "en passe"
+#add "undo" for players?
+#add pawn promotion
+#highlight all possible moves of selected token
