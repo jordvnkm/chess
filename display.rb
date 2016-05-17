@@ -4,12 +4,13 @@ require_relative "cursorable"
 class Display
   include Cursorable
 
-  attr_accessor :board, :cursor_pos, :selected
+  attr_accessor :board, :cursor_pos, :selected, :last_move
 
   def initialize(board)
     @cursor_pos = [0,0]
     @board = board
     @selected = []
+    @last_move = nil
   end
 
   def set_selected(pos)
@@ -18,7 +19,9 @@ class Display
 
   def render
     system("clear")
+    puts "    0   1   2   3   4   5   6   7"
     @board.grid.each_with_index do |row,ridx|
+      print "#{ridx} "
       row.each_with_index do |square,cidx|
         bg = :light_cyan
         if (ridx + cidx) % 2 == 0
@@ -45,6 +48,9 @@ class Display
         end
       end
       print "\n"
+    end
+    unless @last_move == nil
+      p "last move was from #{@last_move[0]} to #{@last_move[1]}"
     end
   end
 end

@@ -1,10 +1,12 @@
 require_relative "board"
 require_relative "display"
+require_relative "human_player"
+require_relative "computer_player"
 
 class Game
   attr_accessor :board, :player1, :player2, :cur_player, :display
 
-  def initialize(board, player1 = :white, player2 = :black)
+  def initialize(board, player1, player2)
     @board = board
     @player1 = player1
     @cur_player = player1
@@ -15,46 +17,36 @@ class Game
 
   def play
     until @board.over?
-      if @board.in_check?(@cur_player)
-        puts "#{@cur_player} is in check"
-      end
       play_turn
     end
     next_player
     @display.render
-    puts "Checkmate! #{@cur_player} wins! "
+    puts "Checkmate! #{@cur_player.name} wins! "
   end
 
   def play_turn
     @display.render
-    p "#{@cur_player}'s turn"
-    begin
-    move = []
-    while move.length < 2
-      input = @display.get_input
-      @display.render
-      p "#{@cur_player}'s turn"
-      unless input == nil
-        move.push(input)
-      end
-      if move.length == 1
-        @display.set_selected(move.first)
-      end
+    p "#{@cur_player.name}'s turn (#{@cur_player.color})"
+    if @board.in_check?(@cur_player.color)
+      puts "#{@cur_player.name} is in check"
     end
-      @display.set_selected([])
-      @board.move(move[0], move[1], cur_player)
-      next_player
+    begin
+    move = @cur_player.get_move(@display)
+    @display.set_selected([])
+    @board.move(move[0], move[1], cur_player.color)
+    next_player
     rescue StandardError => e
       puts e.message
       retry
     end
+    @display.last_move = move
   end
 
   def next_player
-    if (@cur_player == :white)
-      @cur_player = :black
+    if (@cur_player == @player1)
+      @cur_player = @player2
     else
-      @cur_player = :white
+      @cur_player = @player1
     end
   end
 
@@ -63,6 +55,8 @@ end
 
 if __FILE__ == $PROGRAM_NAME
   board = Board.new
-  game = Game.new(board)
+  player1 = HumanPlayer.new("Richard", :white)
+  player2 = ComputerPlayer.new("Jordan", :black)
+  game = Game.new(board, player1, player2)
   game.play
 end
