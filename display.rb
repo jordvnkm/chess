@@ -4,7 +4,8 @@ require_relative "cursorable"
 class Display
   include Cursorable
 
-  attr_accessor :board, :cursor_pos, :selected, :last_move
+  attr_accessor :board, :cursor_pos, :selected,
+    :last_move
 
   def initialize(board)
     @cursor_pos = [0,0]
@@ -15,6 +16,10 @@ class Display
 
   def set_selected(pos)
     @selected = pos
+  end
+
+  def undo
+    @board.undo
   end
 
   def render

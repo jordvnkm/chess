@@ -15,7 +15,10 @@ class HumanPlayer < Player
       if display.board.in_check?(@color)
         puts "#{@name} is in check"
       end
-      unless input == nil
+
+      if input == :undo
+        return nil
+      elsif input != nil
         move.push(input)
       end
       if move.length == 1

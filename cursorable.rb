@@ -22,6 +22,7 @@ module Cursorable
     "\177" => :backspace,
     "\004" => :delete,
     "\u0003" => :ctrl_c,
+    "u" => :undo
   }
 
   MOVES = {
@@ -45,6 +46,9 @@ module Cursorable
     when :left, :right, :up, :down
       update_pos(MOVES[key])
       nil
+    when :undo
+      undo
+      return :undo
     else
       puts key
     end

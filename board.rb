@@ -5,10 +5,11 @@ require_relative "pawn"
 require "byebug"
 
 class Board
-  attr_accessor :grid
+  attr_accessor :grid, :last_board
 
-  def initialize(grid = Array.new(8) {Array.new(8) {nil}})
+  def initialize(grid = Array.new(8) {Array.new(8) {nil}}, last_board = nil)
     @grid = grid
+    @last_board = last_board
   end
 
   def [] (pos)
@@ -95,6 +96,8 @@ class Board
     if !piece.valid_moves.include?(end_pos)
       raise StandardError.new("piece cannot move to end location")
     end
+
+    @last_board = deep_dup
 
     self[start_pos] = nil
     self[end_pos] = piece
@@ -186,7 +189,7 @@ class Board
       end
       new_grid.push(add)
     end
-    new_board = Board.new(new_grid)
+    new_board = Board.new(new_grid, @last_board)
     new_grid.each_with_index do |row, ridx|
       row.each do |square, cidx|
         square.set_board(new_board) unless square == nil
@@ -222,6 +225,11 @@ class Board
       end
     end
     return true
+  end
+
+  def undo
+    @grid = last_board.last_board.grid
+    puts "Undo successful!"
   end
 end
 

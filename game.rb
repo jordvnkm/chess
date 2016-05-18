@@ -32,6 +32,9 @@ class Game
     begin
     move = @cur_player.get_move(@display)
     @display.set_selected([])
+    if move == nil
+      return
+    end
     @board.move(move[0], move[1], cur_player.color)
     next_player
     rescue StandardError => e
@@ -39,6 +42,7 @@ class Game
       retry
     end
     @display.last_move = move
+
   end
 
   def next_player
