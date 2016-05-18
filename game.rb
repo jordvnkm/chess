@@ -57,7 +57,7 @@ end
 if __FILE__ == $PROGRAM_NAME
   board = Board.new
   player1 = HumanPlayer.new("Richard", :white)
-  player2 = HumanPlayer.new("Jordan", :black)
+  player2 = ComputerPlayer.new("Jordan", :black)
   game = Game.new(board, player1, player2)
   game.play
 end
